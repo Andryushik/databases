@@ -10,13 +10,19 @@ const conDb = mysql.createConnection({
   password: 'hyfpassword',
 });
 
-conDb.connect((err) => {
-  if (err) {
-    console.error('error connecting to database: ' + err.stack);
-    return;
-  }
-
+conDb.connect((error) => {
+  if (error) throw new Error('error connecting to database');
   console.log('connected to database as id ' + connection.threadId);
+});
+
+conDb.query('CREATE DATABASE IF NOT EXISTS meetup;', (error, result) => {
+  if (error) throw new Error('error creating database');
+  console.log('meetup database created');
+});
+
+conDb.query('USE meetup;', (error, result) => {
+  if (error) throw new Error('error using database meetup');
+  console.log('using database: meetup');
 });
 
 const sql = 'sql';
@@ -26,7 +32,7 @@ const values = [
 ];
 
 conDb.query(sql, [values], (error, result) => {
-  if (error) throw error;
+  if (error) throw new Error('cannot complete query');
   console.log('query done:' + result.affectedRows);
 });
 
