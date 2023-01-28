@@ -17,7 +17,7 @@ conDb.connect((error) => {
 
 conDb.query('CREATE DATABASE IF NOT EXISTS meetup;', (error, result) => {
   if (error) throw new Error('error creating database');
-  console.log('meetup database created');
+  console.log('database created: meetup');
 });
 
 conDb.query('USE meetup;', (error, result) => {
@@ -32,7 +32,7 @@ const values = [
 ];
 
 conDb.query(sql, [values], (error, result) => {
-  if (error) throw new Error('cannot complete query');
+  if (error) throw new Error(`cannot complete query: ${sql}`);
   console.log('query done:' + result.affectedRows);
 });
 
