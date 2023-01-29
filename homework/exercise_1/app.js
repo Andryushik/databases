@@ -1,5 +1,16 @@
 import express from 'express';
 import mysql from 'mysql';
+import {
+  tableInvitee,
+  tableRoom,
+  tableMeeting,
+  columnsInvitee,
+  columnsRoom,
+  columnsMeeting,
+  valuesInvitee,
+  valuesRoom,
+  valuesMeeting,
+} from './data/tabledata.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,63 +47,31 @@ const createTable = (tableName, columns) => {
     sqlData += `${column.name} ${column.type}`;
   }
   sqlData += `);`;
-  console.log(sqlData);
-  try {
-    conDb.query(sqlData, (error, result) => {
-      if (error) throw new Error(`error creating table ${tableName}`);
-      console.log(`in database meetup table created: ${tableName}`);
-    });
-  } catch (error) {
-    console.error(error);
-  }
+
+  conDb.query(sqlData, (error, result) => {
+    if (error) throw new Error(`error creating table ${tableName}`);
+    console.log(`in database meetup table created: ${tableName}`);
+  });
+};
+
+const insertData = (tableName, values) => {
+  const sqlData = `INSERT INTO ${tableName} VALUES ?`;
+  conDb.query(sqlData, [values], (error, result) => {
+    if (error) throw new Error(`cannot complete query: ${sqlData}`);
+    console.log(`query ${sqlData} done:` + result.affectedRows);
+  });
 };
 
 const fillDataBase = () => {
-  const tableInvitee = 'Invitee';
-  const columnsInvitee = [
-    { name: 'invitee_no', type: 'SMALLINT NOT NULL, ' },
-    { name: 'invitee_name', type: 'TINYTEXT NOT NULL, ' },
-    { name: 'invited_by', type: 'TINYTEXT, ' },
-    { name: 'PRIMARY KEY', type: '(invitee_no)' },
-  ];
-
   createTable(tableInvitee, columnsInvitee);
-
-  const tableRoom = 'Room';
-  const columnsRoom = [
-    { name: 'room_no', type: 'SMALLINT NOT NULL, ' },
-    { name: 'room_name', type: 'TINYTEXT NOT NULL, ' },
-    { name: 'floor_number', type: 'SMALLINT NOT NULL, ' },
-    { name: 'PRIMARY KEY', type: '(room_no)' },
-  ];
-
+  insertData(tableInvitee, valuesInvitee);
   createTable(tableRoom, columnsRoom);
-
-  const tableMeeting = 'Meeting';
-  const columnsMeeting = [
-    { name: 'meeting_no', type: 'INT NOT NULL, ' },
-    { name: 'meeting_title', type: 'TINYTEXT NOT NULL, ' },
-    { name: 'starting_time', type: 'DATETIME, ' },
-    { name: 'ending_time', type: 'DATETIME, ' },
-    { name: 'room_no', type: 'SMALLINT NOT NULL, ' },
-    { name: 'PRIMARY KEY', type: '(meeting_no), ' },
-    { name: 'FOREIGN KEY', type: '(room_no) REFERENCES Room (room_no)' },
-  ];
-
+  insertData(tableRoom, valuesRoom);
   createTable(tableMeeting, columnsMeeting);
+  insertData(tableMeeting, valuesMeeting);
 };
 
 fillDataBase();
 
-// const sql = 'sql';
-// const values = [
-//   ['', ''],
-//   ['', ''],
-// ];
-
-// conDb.query(sql, [values], (error, result) => {
-//   if (error) throw new Error(`cannot complete query: ${sql}`);
-//   console.log('query done:' + result.affectedRows);
-// });
 conDb.end();
 app.listen(PORT, console.log(`Server started on port: ${PORT}`));
