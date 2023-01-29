@@ -12,7 +12,7 @@ const conDb = mysql.createConnection({
 
 conDb.connect((error) => {
   if (error) throw new Error('error connecting to database');
-  console.log('connected to database as id ' + connection.threadId);
+  console.log('connected to database as id ' + conDb.threadId);
 });
 
 conDb.query('DROP DATABASE IF EXISTS meetup;', (error, result) => {
@@ -30,36 +30,36 @@ conDb.query('USE meetup;', (error, result) => {
   console.log('using database: meetup');
 });
 
-// const createTable = (tableName, columns) => {
-//   let sqlData = `CREATE TABLE ${tableName} (`;
-//   for (let column of columns) {
-//     sqlData += `${column.name} ${column.type}`;
-//   }
-//   sqlData += `);`;
-//   console.log(sqlData);
-//   try {
-//     conDb.query(sqlData, (error, result) => {
-//       if (error) throw new Error(`error creating table ${tableName}`);
-//       console.log(`in database meetup table created: ${tableName}`);
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+const createTable = (tableName, columns) => {
+  let sqlData = `CREATE TABLE ${tableName} (`;
+  for (let column of columns) {
+    sqlData += `${column.name} ${column.type}`;
+  }
+  sqlData += `);`;
+  console.log(sqlData);
+  try {
+    conDb.query(sqlData, (error, result) => {
+      if (error) throw new Error(`error creating table ${tableName}`);
+      console.log(`in database meetup table created: ${tableName}`);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-// const fillDataBase = () => {
-//   const tableInvitee = 'Invitee';
-//   const columnsInvitee = [
-//     { name: 'invitee_no', type: 'SMALLINT NOT NULL, ' },
-//     { name: 'invitee_name', type: 'TINYTEXT NOT NULL, ' },
-//     { name: 'invited_by', type: 'TINYTEXT, ' },
-//     { name: 'PRIMARY KEY', type: '(invitee_no)' },
-//   ];
+const fillDataBase = () => {
+  const tableInvitee = 'Invitee';
+  const columnsInvitee = [
+    { name: 'invitee_no', type: 'SMALLINT NOT NULL, ' },
+    { name: 'invitee_name', type: 'TINYTEXT NOT NULL, ' },
+    { name: 'invited_by', type: 'TINYTEXT, ' },
+    { name: 'PRIMARY KEY', type: '(invitee_no)' },
+  ];
 
-//   createTable(tableInvitee, columnsInvitee);
-// };
+  createTable(tableInvitee, columnsInvitee);
+};
 
-// fillDataBase();
+fillDataBase();
 
 // const sql = 'sql';
 // const values = [
@@ -72,4 +72,4 @@ conDb.query('USE meetup;', (error, result) => {
 //   console.log('query done:' + result.affectedRows);
 // });
 
-app.listen(PORT, () => console.log(`Server started on port: ${PORT}`));
+app.listen(PORT, console.log(`Server started on port: ${PORT}`));
