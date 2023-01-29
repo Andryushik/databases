@@ -57,6 +57,29 @@ const fillDataBase = () => {
   ];
 
   createTable(tableInvitee, columnsInvitee);
+
+  const tableRoom = 'Room';
+  const columnsRoom = [
+    { name: 'room_no', type: 'SMALLINT NOT NULL, ' },
+    { name: 'room_name', type: 'TINYTEXT NOT NULL, ' },
+    { name: 'floor_number', type: 'SMALLINT NOT NULL, ' },
+    { name: 'PRIMARY KEY', type: '(room_no)' },
+  ];
+
+  createTable(tableRoom, columnsRoom);
+
+  const tableMeeting = 'Meeting';
+  const columnsMeeting = [
+    { name: 'meeting_no', type: 'INT NOT NULL, ' },
+    { name: 'meeting_title', type: 'TINYTEXT NOT NULL, ' },
+    { name: 'starting_time', type: 'DATETIME, ' },
+    { name: 'ending_time', type: 'DATETIME, ' },
+    { name: 'room_no', type: 'SMALLINT NOT NULL, ' },
+    { name: 'PRIMARY KEY', type: '(meeting_no), ' },
+    { name: 'FOREIGN KEY', type: '(room_no) REFERENCES Room (room_no)' },
+  ];
+
+  createTable(tableMeeting, columnsMeeting);
 };
 
 fillDataBase();
@@ -71,5 +94,5 @@ fillDataBase();
 //   if (error) throw new Error(`cannot complete query: ${sql}`);
 //   console.log('query done:' + result.affectedRows);
 // });
-
+conDb.end();
 app.listen(PORT, console.log(`Server started on port: ${PORT}`));
