@@ -15,7 +15,12 @@ conDb.connect((error) => {
   console.log('connected to database as id ' + connection.threadId);
 });
 
-conDb.query('CREATE DATABASE IF NOT EXISTS meetup;', (error, result) => {
+conDb.query('DROP DATABASE IF EXISTS meetup;', (error, result) => {
+  if (error) throw new Error('error deleting database');
+  console.log('old database deleted');
+});
+
+conDb.query('CREATE DATABASE meetup;', (error, result) => {
   if (error) throw new Error('error creating database');
   console.log('database created: meetup');
 });
@@ -25,15 +30,46 @@ conDb.query('USE meetup;', (error, result) => {
   console.log('using database: meetup');
 });
 
-const sql = 'sql';
-const values = [
-  ['', ''],
-  ['', ''],
-];
+// const createTable = (tableName, columns) => {
+//   let sqlData = `CREATE TABLE ${tableName} (`;
+//   for (let column of columns) {
+//     sqlData += `${column.name} ${column.type}`;
+//   }
+//   sqlData += `);`;
+//   console.log(sqlData);
+//   try {
+//     conDb.query(sqlData, (error, result) => {
+//       if (error) throw new Error(`error creating table ${tableName}`);
+//       console.log(`in database meetup table created: ${tableName}`);
+//     });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
-conDb.query(sql, [values], (error, result) => {
-  if (error) throw new Error(`cannot complete query: ${sql}`);
-  console.log('query done:' + result.affectedRows);
-});
+// const fillDataBase = () => {
+//   const tableInvitee = 'Invitee';
+//   const columnsInvitee = [
+//     { name: 'invitee_no', type: 'SMALLINT NOT NULL, ' },
+//     { name: 'invitee_name', type: 'TINYTEXT NOT NULL, ' },
+//     { name: 'invited_by', type: 'TINYTEXT, ' },
+//     { name: 'PRIMARY KEY', type: '(invitee_no)' },
+//   ];
 
-app.listen(PORT, console.log(`Server started on port: ${PORT}`));
+//   createTable(tableInvitee, columnsInvitee);
+// };
+
+// fillDataBase();
+
+// const sql = 'sql';
+// const values = [
+//   ['', ''],
+//   ['', ''],
+// ];
+
+// conDb.query(sql, [values], (error, result) => {
+//   if (error) throw new Error(`cannot complete query: ${sql}`);
+//   console.log('query done:' + result.affectedRows);
+// });
+
+app.listen(PORT, () => console.log(`Server started on port: ${PORT}`));
