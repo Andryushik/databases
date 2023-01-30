@@ -13,10 +13,10 @@ const poolWorldDb = mysql.createPool({
 });
 
 poolWorldDb.query(
-  'SELECT 1 + 1 AS solution',
+  'SELECT Name FROM country WHERE Population > 8000000;',
   function (error, results, fields) {
     if (error) throw error;
-    console.log('The solution is: ', results[0].solution);
+    console.log(results);
   },
 );
 
