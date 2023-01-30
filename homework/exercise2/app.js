@@ -21,14 +21,26 @@ conWorldDb.connect((error) => {
 
 conWorldDb.query(
   'SELECT Name FROM country WHERE Population > 8000000;',
-  function (error, results, fields) {
+  function (error, results /*, fields*/) {
     if (error) throw error;
     console.log(
       'What are the names of countries with population greater than 8 million?',
     );
-    results.forEach((element) => {
-      console.log(element.Name);
-    });
+    console.table(results);
+    // results.forEach((element) => {
+    //   console.log(element.Name);
+    // });
+  },
+);
+
+conWorldDb.query(
+  `SELECT Name FROM country WHERE Name LIKE '%land%';`,
+  function (error, results) {
+    if (error) throw error;
+    console.log(
+      'What are the names of countries that have “land” in their names?',
+    );
+    console.table(results);
   },
 );
 
