@@ -73,5 +73,12 @@ const fillDataBase = () => {
 
 fillDataBase();
 
-conDb.end();
+conDb.end((error) => {
+  if (error) {
+    console.error('cannot disconnect: ' + error.stack);
+    return;
+  }
+  console.log('Successfully disconnected from meetup DB.');
+});
+
 app.listen(PORT, console.log(`Server started on port: ${PORT}`));
