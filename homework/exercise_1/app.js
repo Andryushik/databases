@@ -1,4 +1,5 @@
 import express from 'express';
+import util from 'util';
 import mysql from 'mysql';
 import {
   tableInvitee,
@@ -15,70 +16,52 @@ import {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const conDb = mysql.createConnection({
+const connection = mysql.createConnection({
   host: 'localhost',
   user: 'hyfuser',
   password: 'hyfpassword',
 });
 
-conDb.connect((error) => {
-  if (error) throw new Error('error connecting to database');
-  console.log('connected to database as id ' + conDb.threadId);
-});
+const execQuery = util.promisify(connection.query.bind(connection));
 
-conDb.query('DROP DATABASE IF EXISTS meetup;', (error, result) => {
-  if (error) throw new Error('error deleting database');
-  console.log('old database deleted');
-});
+const createDatabase = async () => {
+  await execQuery('DROP DATABASE IF EXISTS meetup;');
 
-conDb.query('CREATE DATABASE meetup;', (error, result) => {
-  if (error) throw new Error('error creating database');
-  console.log('database created: meetup');
-});
+  await execQuery('CREATE DATABASE meetup;');
 
-conDb.query('USE meetup;', (error, result) => {
-  if (error) throw new Error('error using database meetup');
-  console.log('using database: meetup');
-});
+  await execQuery('USE meetup;');
+};
 
-const createTable = (tableName, columns) => {
+const createTable = async (tableName, columns) => {
   let sqlData = `CREATE TABLE ${tableName} (`;
   for (let column of columns) {
     sqlData += `${column.name} ${column.type}`;
   }
   sqlData += `);`;
 
-  conDb.query(sqlData, (error, result) => {
-    if (error) throw new Error(`error creating table ${tableName}`);
-    console.log(`in database meetup table created: ${tableName}`);
-  });
+  await execQuery(sqlData);
 };
 
-const insertData = (tableName, values) => {
+const insertData = async (tableName, values) => {
   const sqlData = `INSERT INTO ${tableName} VALUES ?`;
-  conDb.query(sqlData, [values], (error, result) => {
-    if (error) throw new Error(`cannot complete query: ${sqlData}`);
-    console.log(`query ${sqlData} done:` + result.affectedRows);
-  });
+  await execQuery(sqlData, [values]);
 };
 
-const fillDataBase = () => {
-  createTable(tableInvitee, columnsInvitee);
-  insertData(tableInvitee, valuesInvitee);
-  createTable(tableRoom, columnsRoom);
-  insertData(tableRoom, valuesRoom);
-  createTable(tableMeeting, columnsMeeting);
-  insertData(tableMeeting, valuesMeeting);
+const fillDataBase = async () => {
+  try {
+    await createDatabase();
+    await createTable(tableInvitee, columnsInvitee);
+    await insertData(tableInvitee, valuesInvitee);
+    await createTable(tableRoom, columnsRoom);
+    await insertData(tableRoom, valuesRoom);
+    await createTable(tableMeeting, columnsMeeting);
+    await insertData(tableMeeting, valuesMeeting);
+  } catch (error) {
+    console.log(error);
+  }
+  connection.end();
 };
 
 fillDataBase();
-
-conDb.end((error) => {
-  if (error) {
-    console.error('cannot disconnect: ' + error.stack);
-    return;
-  }
-  console.log('Successfully disconnected from meetup DB.');
-});
 
 app.listen(PORT, console.log(`Server started on port: ${PORT}`));
