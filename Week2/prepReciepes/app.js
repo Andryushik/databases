@@ -1,17 +1,7 @@
 import express from 'express';
 import util from 'util';
 import mysql from 'mysql';
-import {
-  tableInvitee,
-  tableRoom,
-  tableMeeting,
-  columnsInvitee,
-  columnsRoom,
-  columnsMeeting,
-  valuesInvitee,
-  valuesRoom,
-  valuesMeeting,
-} from './data/tabledata.js';
+import { tables } from './data/tabledata.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,43 +15,40 @@ const connection = mysql.createConnection({
 const execQuery = util.promisify(connection.query.bind(connection));
 
 const createDatabase = async () => {
-  await execQuery('DROP DATABASE IF EXISTS meetup;');
+  await execQuery('DROP DATABASE IF EXISTS recipes;');
 
-  await execQuery('CREATE DATABASE meetup;');
+  await execQuery('CREATE DATABASE recipes;');
 
-  await execQuery('USE meetup;');
+  await execQuery('USE recipes;');
 };
 
-const createTable = async (tableName, columns) => {
-  let sqlData = `CREATE TABLE ${tableName} (`;
-  for (let column of columns) {
-    sqlData += `${column.name} ${column.type}`;
+const createTable = (table) => {
+  let sqlData = `CREATE TABLE ${table.tableName} (`;
+  for (let column of table.columns) {
+    sqlData += `${column}`;
   }
   sqlData += `);`;
-
-  await execQuery(sqlData);
+  return sqlData;
 };
 
-const insertData = async (tableName, values) => {
-  const sqlData = `INSERT INTO ${tableName} VALUES ?`;
-  await execQuery(sqlData, [values]);
-};
-
-const fillDataBase = async () => {
+const seedDatabase = async () => {
   try {
     await createDatabase();
-    await createTable(tableInvitee, columnsInvitee);
-    await insertData(tableInvitee, valuesInvitee);
-    await createTable(tableRoom, columnsRoom);
-    await insertData(tableRoom, valuesRoom);
-    await createTable(tableMeeting, columnsMeeting);
-    await insertData(tableMeeting, valuesMeeting);
+    await Promise.all(tables.map((table) => execQuery(createTable(table))));
+    await Promise.all(
+      tables.map((table) => {
+        const columns = table.values[0].length > 1 ? '' : '(name)';
+        execQuery(`INSERT INTO ${table.tableName} ${columns} VALUES ?`, [
+          table.values,
+        ]);
+      }),
+    );
   } catch (error) {
     console.log(error);
   }
   connection.end();
 };
 
-fillDataBase();
+seedDatabase();
 
 app.listen(PORT, console.log(`Server started on port: ${PORT}`));
