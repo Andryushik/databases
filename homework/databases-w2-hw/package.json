@@ -1,0 +1,17 @@
+{
+  "name": "databases-w2-hw",
+  "version": "1.0.0",
+  "description": "homework databases week 2",
+  "type": "module",
+  "main": "ex1-keys.js",
+  "scripts": {
+    "start": "node ex1-keys.js"
+  },
+  "author": "Andrei Popov",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql": "^2.18.1",
+    "util": "^0.12.5"
+  }
+}
