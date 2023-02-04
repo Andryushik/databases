@@ -9,6 +9,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'hyfuser',
   password: 'hyfpassword',
+  database: 'week2db',
 });
 
 const execQuery = util.promisify(connection.query.bind(connection));
@@ -16,13 +17,15 @@ const execQuery = util.promisify(connection.query.bind(connection));
 const seedDatabase = async () => {
   try {
     await execQuery('CREATE DATABASE IF NOT EXISTS week2db;');
-    await execQuery('USE week2db;');
-    await execQuery(`DROP TABLE IF EXISTS authors;`);
+    await execQuery(`DROP TABLE IF EXISTS research_Papers`);
     await execQuery(
-      `CREATE TABLE authors (author_id INT PRIMARY KEY AUTO_INCREMENT, author_name VARCHAR(100) NOT NULL, university VARCHAR(255), date_of_birth DATE, h_index INT, gender VARCHAR(6) NOT NULL CHECK(gender IN ("Female", "Male")));`,
+      `CREATE TABLE research_Papers (paper_id INT PRIMARY KEY AUTO_INCREMENT, paper_title VARCHAR(255) NOT NULL, conference VARCHAR(255), publish_date DATE);`,
     );
     await execQuery(
-      `ALTER TABLE authors ADD COLUMN mentor_id INT, ADD CONSTRAINT fk_mentor_id_author_id FOREIGN KEY (mentor_id) REFERENCES authors(author_id);`,
+      `ALTER TABLE research_Papers ADD COLUMN research_author INT, ADD CONSTRAINT fk_research_author_author_id FOREIGN KEY (research_author) REFERENCES authors(author_id);`,
+    );
+    await execQuery(
+      `CREATE TABLE mentors (mentor_id INT PRIMARY KEY AUTO_INCREMENT, mentor_name VARCHAR(100) NOT NULL);`,
     );
   } catch (error) {
     console.log(error);
