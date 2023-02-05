@@ -1,5 +1,4 @@
 import express from 'express';
-import util from 'util';
 import mysql from 'mysql';
 
 const app = express();
@@ -11,23 +10,51 @@ const connection = mysql.createConnection({
   password: 'hyfpassword',
 });
 
-const execQuery = util.promisify(connection.query.bind(connection));
+connection.connect((error) => {
+  if (error) {
+    console.error('error connecting: ' + error.stack);
+    return;
+  }
 
-const seedDatabase = async () => {
+  console.log('connected as id ' + connection.threadId);
+});
+
+const seedDatabase = () => {
   try {
-    await execQuery('CREATE DATABASE IF NOT EXISTS week2db;');
-    await execQuery('USE week2db;');
-    await execQuery(`DROP TABLE IF EXISTS authors;`);
-    await execQuery(
+    connection.query('CREATE DATABASE IF NOT EXISTS week2db;', (error) => {
+      if (error) throw error;
+    });
+    connection.query('USE week2db;', (error) => {
+      if (error) throw error;
+    });
+    connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
+      if (error) throw error;
+    });
+    connection.query(`DROP TABLE IF EXISTS authors;`, (error) => {
+      if (error) throw error;
+    });
+    connection.query(
       `CREATE TABLE authors (author_id INT PRIMARY KEY AUTO_INCREMENT, author_name VARCHAR(100) NOT NULL, university VARCHAR(255), date_of_birth DATE, h_index INT, gender VARCHAR(6) NOT NULL CHECK(gender IN ("Female", "Male")));`,
+      (error) => {
+        if (error) throw error;
+      },
     );
-    await execQuery(
+    connection.query(
       `ALTER TABLE authors ADD COLUMN mentor_id INT, ADD CONSTRAINT fk_mentor_id_author_id FOREIGN KEY (mentor_id) REFERENCES authors(author_id);`,
+      (error) => {
+        if (error) throw error;
+      },
     );
   } catch (error) {
     console.log(error);
   }
-  connection.end();
+  connection.end((error) => {
+    if (error) {
+      console.error('cannot disconnect: ' + error.stack);
+      return;
+    }
+    console.log('successfully disconnected from week2db');
+  });
 };
 
 seedDatabase();

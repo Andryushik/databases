@@ -1,5 +1,4 @@
 import express from 'express';
-import util from 'util';
 import mysql from 'mysql';
 
 const app = express();
@@ -12,25 +11,51 @@ const connection = mysql.createConnection({
   database: 'week2db',
 });
 
-const execQuery = util.promisify(connection.query.bind(connection));
+connection.connect((error) => {
+  if (error) {
+    console.error('error connecting: ' + error.stack);
+    return;
+  }
 
-const seedDatabase = async () => {
+  console.log('connected as id ' + connection.threadId);
+});
+
+const seedDatabase = () => {
   try {
-    await execQuery('CREATE DATABASE IF NOT EXISTS week2db;');
-    await execQuery(`DROP TABLE IF EXISTS research_Papers`);
-    await execQuery(
+    connection.query('CREATE DATABASE IF NOT EXISTS week2db;', (error) => {
+      if (error) throw error;
+    });
+    connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
+      if (error) throw error;
+    });
+    connection.query(
       `CREATE TABLE research_Papers (paper_id INT PRIMARY KEY AUTO_INCREMENT, paper_title VARCHAR(255) NOT NULL, conference VARCHAR(255), publish_date DATE);`,
+      (error) => {
+        if (error) throw error;
+      },
     );
-    await execQuery(
+    connection.query(
       `ALTER TABLE research_Papers ADD COLUMN research_author INT, ADD CONSTRAINT fk_research_author_author_id FOREIGN KEY (research_author) REFERENCES authors(author_id);`,
+      (error) => {
+        if (error) throw error;
+      },
     );
-    await execQuery(
+    connection.query(
       `CREATE TABLE mentors (mentor_id INT PRIMARY KEY AUTO_INCREMENT, mentor_name VARCHAR(100) NOT NULL);`,
+      (error) => {
+        if (error) throw error;
+      },
     );
   } catch (error) {
     console.log(error);
   }
-  connection.end();
+  connection.end((error) => {
+    if (error) {
+      console.error('cannot disconnect: ' + error.stack);
+      return;
+    }
+    console.log('successfully disconnected from week2db');
+  });
 };
 
 seedDatabase();
