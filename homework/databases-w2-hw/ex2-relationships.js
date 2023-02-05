@@ -1,5 +1,6 @@
 import express from 'express';
 import mysql from 'mysql';
+import { authorsData, papersData, mentorsData } from './tables/tablesData.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,9 +23,9 @@ connection.connect((error) => {
 
 const seedDatabase = () => {
   try {
-    // connection.query('CREATE DATABASE IF NOT EXISTS week2db;', (error) => {
-    //   if (error) throw error;
-    // });
+    connection.query(`SET FOREIGN_KEY_CHECKS=0;`, (error) => {
+      if (error) throw error;
+    });
     connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
       if (error) throw error;
     });
@@ -61,8 +62,29 @@ const seedDatabase = () => {
         if (error) throw error;
       },
     );
+    connection.query(
+      `INSERT INTO mentors (mentor_name) VALUES ?;`,
+      [mentorsData],
+      (error) => {
+        if (error) throw error;
+      },
+    );
+    connection.query(
+      `INSERT INTO authors (author_name, university, date_of_birth, h_index, gender, mentor_id) VALUES ?;`,
+      [authorsData],
+      (error) => {
+        if (error) throw error;
+      },
+    );
+    connection.query(
+      `INSERT INTO research_Papers (paper_title, conference, publish_date, research_author) VALUES ?;`,
+      [papersData],
+      (error) => {
+        if (error) throw error;
+      },
+    );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   connection.end((error) => {
     if (error) {
