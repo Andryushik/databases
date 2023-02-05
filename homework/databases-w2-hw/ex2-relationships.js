@@ -22,10 +22,13 @@ connection.connect((error) => {
 
 const seedDatabase = () => {
   try {
-    connection.query('CREATE DATABASE IF NOT EXISTS week2db;', (error) => {
+    // connection.query('CREATE DATABASE IF NOT EXISTS week2db;', (error) => {
+    //   if (error) throw error;
+    // });
+    connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
       if (error) throw error;
     });
-    connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
+    connection.query(`DROP TABLE IF EXISTS mentors`, (error) => {
       if (error) throw error;
     });
     connection.query(
@@ -42,6 +45,18 @@ const seedDatabase = () => {
     );
     connection.query(
       `CREATE TABLE mentors (mentor_id INT PRIMARY KEY AUTO_INCREMENT, mentor_name VARCHAR(100) NOT NULL);`,
+      (error) => {
+        if (error) throw error;
+      },
+    );
+    connection.query(
+      `ALTER TABLE authors DROP FOREIGN KEY fk_mentor_id_author_id;`,
+      (error) => {
+        if (error) throw error;
+      },
+    );
+    connection.query(
+      `ALTER TABLE authors ADD CONSTRAINT fk_mentor_id_author_id FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id);`,
       (error) => {
         if (error) throw error;
       },
