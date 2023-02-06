@@ -293,7 +293,7 @@ const papersData = [
     'The Science of Happiness',
     'International Conference on Positive Psychology',
     '2013-09-15',
-    28,
+    20,
   ],
   [
     'The Structure of the Earth',
