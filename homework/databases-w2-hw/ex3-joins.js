@@ -20,7 +20,7 @@ connection.connect((error) => {
   console.log('connected as id ' + connection.threadId);
 });
 
-const seedDatabase = () => {
+const executeJoins = () => {
   try {
     connection.query(
       `SELECT author_name, mentor_name FROM authors
@@ -51,6 +51,6 @@ const seedDatabase = () => {
   });
 };
 
-seedDatabase();
+executeJoins();
 
 app.listen(PORT, console.log(`Server started on port: ${PORT}`));
