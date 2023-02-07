@@ -1,18 +1,18 @@
 const tableInvitee = 'Invitee';
 const columnsInvitee = [
-  { name: 'invitee_no', type: 'SMALLINT NOT NULL, ' },
-  { name: 'invitee_name', type: 'VARCHAR(25) NOT NULL, ' },
-  { name: 'invited_by', type: 'TINYTEXT, ' },
-  { name: 'INDEX', type: 'invitee_name_index (invitee_name), ' },
+  { name: 'invitee_no', type: 'SMALLINT NOT NULL' },
+  { name: 'invitee_name', type: 'VARCHAR(25) NOT NULL' },
+  { name: 'invited_by', type: 'VARCHAR(25)' },
+  { name: 'INDEX', type: 'invitee_name_index (invitee_name)' },
   { name: 'PRIMARY KEY', type: '(invitee_no)' },
 ];
 
 const tableRoom = 'Room';
 const columnsRoom = [
-  { name: 'room_no', type: 'SMALLINT NOT NULL, ' },
-  { name: 'room_name', type: 'VARCHAR(25) NOT NULL, ' },
-  { name: 'floor_number', type: 'SMALLINT NOT NULL, ' },
-  { name: 'PRIMARY KEY', type: '(room_no), ' },
+  { name: 'room_no', type: 'SMALLINT NOT NULL' },
+  { name: 'room_name', type: 'VARCHAR(25) NOT NULL' },
+  { name: 'floor_number', type: 'SMALLINT NOT NULL' },
+  { name: 'PRIMARY KEY', type: '(room_no)' },
   {
     name: 'FOREIGN KEY',
     type: '(room_name) REFERENCES Invitee (invitee_name)',
@@ -21,12 +21,12 @@ const columnsRoom = [
 
 const tableMeeting = 'Meeting';
 const columnsMeeting = [
-  { name: 'meeting_no', type: 'INT NOT NULL, ' },
-  { name: 'meeting_title', type: 'TINYTEXT NOT NULL, ' },
-  { name: 'starting_time', type: 'DATETIME, ' },
-  { name: 'ending_time', type: 'DATETIME, ' },
-  { name: 'room_no', type: 'SMALLINT NOT NULL, ' },
-  { name: 'PRIMARY KEY', type: '(meeting_no), ' },
+  { name: 'meeting_no', type: 'INT NOT NULL' },
+  { name: 'meeting_title', type: 'TINYTEXT NOT NULL' },
+  { name: 'starting_time', type: 'DATETIME' },
+  { name: 'ending_time', type: 'DATETIME' },
+  { name: 'room_no', type: 'SMALLINT NOT NULL' },
+  { name: 'PRIMARY KEY', type: '(meeting_no)' },
   { name: 'FOREIGN KEY', type: '(room_no) REFERENCES Room (room_no)' },
 ];
 

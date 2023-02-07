@@ -22,34 +22,34 @@ const conDb = mysql.createConnection({
 });
 
 conDb.connect((error) => {
-  if (error) throw new Error('error connecting to database');
+  if (error) throw new Error(`Error connecting to database: ${error}`);
   console.log('connected to database as id ' + conDb.threadId);
 });
 
 conDb.query('DROP DATABASE IF EXISTS meetup;', (error, result) => {
-  if (error) throw new Error('error deleting database');
+  if (error) throw new Error(`error deleting database ${error}`);
   console.log('old database deleted');
 });
 
 conDb.query('CREATE DATABASE meetup;', (error, result) => {
-  if (error) throw new Error('error creating database');
+  if (error) throw new Error(`error creating database ${error}`);
   console.log('database created: meetup');
 });
 
 conDb.query('USE meetup;', (error, result) => {
-  if (error) throw new Error('error using database meetup');
+  if (error) throw new Error(`error using database meetup ${error}`);
   console.log('using database: meetup');
 });
 
 const createTable = (tableName, columns) => {
   let sqlData = `CREATE TABLE ${tableName} (`;
   for (let column of columns) {
-    sqlData += `${column.name} ${column.type}`;
+    sqlData += `${column.name} ${column.type}, `;
   }
-  sqlData += `);`;
+  sqlData = sqlData.slice(0, -2) + `);`;
 
   conDb.query(sqlData, (error, result) => {
-    if (error) throw new Error(`error creating table ${tableName}`);
+    if (error) throw new Error(`error creating table ${tableName} ${error}`);
     console.log(`in database meetup table created: ${tableName}`);
   });
 };
@@ -57,7 +57,7 @@ const createTable = (tableName, columns) => {
 const insertData = (tableName, values) => {
   const sqlData = `INSERT INTO ${tableName} VALUES ?`;
   conDb.query(sqlData, [values], (error, result) => {
-    if (error) throw new Error(`cannot complete query: ${sqlData}`);
+    if (error) throw new Error(`cannot complete query: ${sqlData} ${error}`);
     console.log(`query ${sqlData} done:` + result.affectedRows);
   });
 };
