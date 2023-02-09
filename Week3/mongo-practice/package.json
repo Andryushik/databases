@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "mongodb": "^5.0.1"
+  },
+  "name": "mongo-practice",
+  "version": "1.0.0",
+  "main": "demo.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node demo.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
