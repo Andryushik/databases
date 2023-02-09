@@ -1,4 +1,3 @@
-import express from 'express';
 import mysql from 'mysql';
 import {
   tableInvitee,
@@ -11,9 +10,6 @@ import {
   valuesRoom,
   valuesMeeting,
 } from './data/tabledata.js';
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 const conDb = mysql.createConnection({
   host: 'localhost',
@@ -42,11 +38,10 @@ conDb.query('USE meetup;', (error, result) => {
 });
 
 const createTable = (tableName, columns) => {
-  let sqlData = `CREATE TABLE ${tableName} (`;
-  for (let column of columns) {
-    sqlData += `${column.name} ${column.type}, `;
-  }
-  sqlData = sqlData.slice(0, -2) + `);`;
+  const sqlArray = columns.map((column) => {
+    return `${column.name} ${column.type}`;
+  });
+  const sqlData = `CREATE TABLE ${tableName} (` + sqlArray.join(', ') + `);`;
 
   conDb.query(sqlData, (error, result) => {
     if (error) throw new Error(`error creating table ${tableName} ${error}`);
@@ -80,5 +75,3 @@ conDb.end((error) => {
   }
   console.log('Successfully disconnected from meetup DB.');
 });
-
-app.listen(PORT, console.log(`Server started on port: ${PORT}`));
