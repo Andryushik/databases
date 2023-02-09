@@ -1,8 +1,4 @@
-import express from 'express';
 import mysql from 'mysql';
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -52,5 +48,3 @@ const executeJoins = () => {
 };
 
 executeJoins();
-
-app.listen(PORT, console.log(`Server started on port: ${PORT}`));
