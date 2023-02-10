@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const newMovies = [
   {
@@ -50,6 +50,82 @@ const newMovies = [
   },
 ];
 
+const newUsers = [
+  {
+    username: 'GoodGuyGreg',
+    first_name: 'Good Guy',
+    last_name: 'Greg',
+  },
+  {
+    username: 'ScumbagSteve',
+    full_name: {
+      first: 'Scumbag',
+      last: 'Steve',
+    },
+  },
+];
+
+const newPosts = [
+  {
+    username: 'GoodGuyGreg',
+    title: 'Passes out at party',
+    body: 'Wakes up early and cleans house',
+  },
+  {
+    username: 'GoodGuyGreg',
+    title: 'Steals your identity',
+    body: 'Raises your credit score',
+  },
+  {
+    username: 'GoodGuyGreg',
+    title: 'Reports a bug in your code',
+    body: 'Sends you a Pull Request',
+  },
+  {
+    username: 'ScumbagSteve',
+    title: 'Borrows something',
+    body: 'Sells it',
+  },
+  {
+    username: 'ScumbagSteve',
+    title: 'Borrows everything',
+    body: 'The end',
+  },
+  {
+    username: 'ScumbagSteve',
+    title: 'Forks your repo on github',
+    body: 'Sets to private',
+  },
+];
+
+const newComments = [
+  {
+    username: 'GoodGuyGreg',
+    comment: 'Hope you got a good deal!',
+    post: new ObjectId('63e660c768e91b7c3c552d34'),
+  },
+  {
+    username: 'GoodGuyGreg',
+    comment: "What's mine is yours!",
+    post: new ObjectId('63e660c768e91b7c3c552d35'),
+  },
+  {
+    username: 'GoodGuyGreg',
+    comment: "Don't violate the licensing agreement!",
+    post: new ObjectId('63e660c768e91b7c3c552d36'),
+  },
+  {
+    username: 'ScumbagSteve',
+    comment: "It still isn't clean",
+    post: new ObjectId('63e660c768e91b7c3c552d31'),
+  },
+  {
+    username: 'ScumbagSteve',
+    comment: 'Denied your PR cause I found a hack',
+    post: new ObjectId('63e660c768e91b7c3c552d33'),
+  },
+];
+
 async function main() {
   const uri =
     'mongodb+srv://hyfuser:hyfpassword@cluster0.wx5fpuv.mongodb.net/?retryWrites=true&w=majority';
@@ -63,10 +139,52 @@ async function main() {
     //await listDb(client);
     //await insertMovie(client, { title: 'Avatar' });
     //await insertMultipleMovies(client, newMovies);
+    //QUERIES
     //await findMovies(client, {});
+    //await findMovies(client, { title: 'The Hobbit: An Unexpected Journey' });
     //await findMovies(client, { writer: 'Quentin Tarantino' });
     //await findMovies(client, { actors: 'Brad Pitt' });
     //await findMovies(client, { franchise: 'The Hobbit' });
+    // await findMovies(client, {
+    //   year: { $lt: 2000, $gte: 1990 },
+    // });
+    // await findMovies(client, {
+    //   $or: [{ year: { $lt: 2000 } }, { year: { $gt: 2010 } }],
+    // });
+    //UPDATE
+    // await updateMovie(client, 'The Hobbit: An Unexpected Journey', {
+    //   synopsis:
+    //     'A reluctant hobbit, Bilbo Baggins, sets out to the Lonely Mountain with a spirited group of dwarves to reclaim their mountain home - and the gold within it - from the dragon Smaug.',
+    // });
+    // await updateMovieArr(client, 'Pulp Fiction', {
+    //   actors: 'Samuel L. Jackson',
+    // });
+    //TEXT SEARCH
+    //await findMoviesByText(client, 'Bilbo');
+    //await findMoviesByText(client, 'Gandalf');
+    // await findMoviesByText(client, 'bilbo -Gandalf');
+    // await findMoviesByText(client, 'dwarves hobbit');
+    //await findMoviesByText(client, 'gold, dragon');
+    //DELETE
+    //await deleteMovieByTitle(client, "Pee Wee Herman's Big Adventure");
+    //await deleteMovieByTitle(client, 'Avatar');
+    //-------------------------------------------------------
+    //RELATIONSHIPS
+    //await insertMultipleUsers(client, newUsers);
+    //await insertMultiplePosts(client, newPosts);
+    //await insertMultipleComments(client, newComments);
+    //await findAllUsers(client, {});
+    //await findAllPosts(client, {});
+    // await findAllPosts(client, { username: 'GoodGuyGreg' });
+    //await findAllPosts(client, { username: 'ScumbagSteve' });
+    // await findAllComments(client, {});
+    //await findAllComments(client, { username: 'GoodGuyGreg' });
+    //await findAllComments(client, { username: 'ScumbagSteve' });
+    await findAllCommentsRelatedToPost(client, {
+      title: 'Reports a bug in your code',
+    });
+
+    //-------------------------------------------------------
   } catch (err) {
     console.error(err);
   } finally {
@@ -116,5 +234,150 @@ async function findMovies(client, searchBy) {
     console.log(results);
   } else {
     console.log(`No movies found!`);
+  }
+}
+
+async function updateMovie(client, movieToUpdate, newMovieData) {
+  const result = await client
+    .db('mongo_practice')
+    .collection('movies')
+    .updateOne({ title: movieToUpdate }, { $set: newMovieData });
+
+  console.log(`${result.matchedCount} movie(s) matched the query criteria.`);
+  console.log(`${result.modifiedCount} movie(s) was/were updated.`);
+}
+
+async function updateMovieArr(client, movieToUpdate, newMovieData) {
+  const result = await client
+    .db('mongo_practice')
+    .collection('movies')
+    .updateOne({ title: movieToUpdate }, { $push: newMovieData });
+
+  console.log(`${result.matchedCount} movie(s) matched the query criteria.`);
+  console.log(`${result.modifiedCount} movie(s) was/were updated.`);
+}
+
+async function findMoviesByText(client, searchByText) {
+  //creating index
+  client
+    .db('mongo_practice')
+    .collection('movies')
+    .createIndex({ synopsis: 'text' });
+
+  //search
+  const cursor = await client
+    .db('mongo_practice')
+    .collection('movies')
+    .find({ $text: { $search: searchByText } });
+  //Or can use following code without creating index
+  //.find({ synopsis: { $regex: searchByText } });
+  const results = await cursor.toArray();
+  if (results.length > 0) {
+    console.log(`Found ${results.length} movie(s): `);
+    console.log(results);
+  } else {
+    console.log(`No movies found!`);
+  }
+}
+
+async function deleteMovieByTitle(client, movieToDelete) {
+  const result = await client
+    .db('mongo_practice')
+    .collection('movies')
+    .deleteOne({ title: movieToDelete });
+  console.log(`${result.deletedCount} movie was deleted.`);
+}
+
+async function insertMultipleUsers(client, newUsers) {
+  const result = await client
+    .db('mongo_practice')
+    .collection('users')
+    .insertMany(newUsers);
+
+  console.log(
+    `${result.insertedCount} new user(s) added with the following id(s): `,
+  );
+  console.log(result.insertedIds);
+}
+
+async function insertMultiplePosts(client, newPosts) {
+  const result = await client
+    .db('mongo_practice')
+    .collection('posts')
+    .insertMany(newPosts);
+
+  console.log(
+    `${result.insertedCount} new post(s) added with the following id(s): `,
+  );
+  console.log(result.insertedIds);
+}
+
+async function insertMultipleComments(client, newComments) {
+  const result = await client
+    .db('mongo_practice')
+    .collection('comments')
+    .insertMany(newComments);
+
+  console.log(
+    `${result.insertedCount} new comment(s) added with the following id(s): `,
+  );
+  console.log(result.insertedIds);
+}
+
+async function findAllUsers(client, searchBy) {
+  const cursor = await client
+    .db('mongo_practice')
+    .collection('users')
+    .find(searchBy);
+  const results = await cursor.toArray();
+  if (results.length > 0) {
+    console.log(`Found ${results.length} user(s): `);
+    console.log(results);
+  } else {
+    console.log(`No user(s) found!`);
+  }
+}
+
+async function findAllPosts(client, searchBy) {
+  const cursor = await client
+    .db('mongo_practice')
+    .collection('posts')
+    .find(searchBy);
+  const results = await cursor.toArray();
+  if (results.length > 0) {
+    console.log(`Found ${results.length} post(s): `);
+    console.log(results);
+  } else {
+    console.log(`No post(s) found!`);
+  }
+}
+
+async function findAllComments(client, searchBy) {
+  const cursor = await client
+    .db('mongo_practice')
+    .collection('comments')
+    .find(searchBy);
+  const results = await cursor.toArray();
+  if (results.length > 0) {
+    console.log(`Found ${results.length} comment(s): `);
+    console.log(results);
+  } else {
+    console.log(`No comment(s) found!`);
+  }
+}
+
+async function findAllCommentsRelatedToPost(client, searchBy) {
+  const cursor = await client
+    .db('mongo_practice')
+    .collection('posts')
+    .find(searchBy);
+  const results = await cursor.toArray();
+  if (results.length > 0) {
+    console.log(`Found ${results.length} post(s): `);
+    const postId = results[0]._id.toString();
+    console.log(`new ObjectId('${postId}')`);
+    await findAllComments(client, { post: `new ObjectId('${postId}')` });
+  } else {
+    console.log(`No post(s) found!`);
   }
 }
