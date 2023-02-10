@@ -175,9 +175,9 @@ async function main() {
     //await insertMultipleComments(client, newComments);
     //await findAllUsers(client, {});
     //await findAllPosts(client, {});
-    // await findAllPosts(client, { username: 'GoodGuyGreg' });
+    //await findAllPosts(client, { username: 'GoodGuyGreg' });
     //await findAllPosts(client, { username: 'ScumbagSteve' });
-    // await findAllComments(client, {});
+    //await findAllComments(client, {});
     //await findAllComments(client, { username: 'GoodGuyGreg' });
     //await findAllComments(client, { username: 'ScumbagSteve' });
     await findAllCommentsRelatedToPost(client, {
@@ -367,16 +367,16 @@ async function findAllComments(client, searchBy) {
 }
 
 async function findAllCommentsRelatedToPost(client, searchBy) {
-  const cursor = await client
+  const results = await client
     .db('mongo_practice')
     .collection('posts')
-    .find(searchBy);
-  const results = await cursor.toArray();
+    .find(searchBy)
+    .toArray();
   if (results.length > 0) {
     console.log(`Found ${results.length} post(s): `);
     const postId = results[0]._id.toString();
-    console.log(`new ObjectId('${postId}')`);
-    await findAllComments(client, { post: `new ObjectId('${postId}')` });
+    console.log(postId);
+    await findAllComments(client, { post: `${postId}` });
   } else {
     console.log(`No post(s) found!`);
   }
