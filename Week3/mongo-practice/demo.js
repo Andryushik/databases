@@ -376,7 +376,12 @@ async function findAllCommentsRelatedToPost(client, searchBy) {
     console.log(`Found ${results.length} post(s): `);
     const postId = results[0]._id.toString();
     console.log(postId);
-    await findAllComments(client, { post: `${postId}` });
+    const found = await client
+      .db('mongo_practice')
+      .collection('comments')
+      .find({ _id: `ObjectId('${postId}')` })
+      .toArray();
+    console.log(found);
   } else {
     console.log(`No post(s) found!`);
   }
