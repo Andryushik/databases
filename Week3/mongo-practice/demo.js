@@ -180,11 +180,11 @@ async function main() {
     //await findAllComments(client, {});
     //await findAllComments(client, { username: 'GoodGuyGreg' });
     //await findAllComments(client, { username: 'ScumbagSteve' });
-    // await findAllCommentsRelatedToPost(client, {
-    //   title: 'Reports a bug in your code',
-    // });
+    await findAllCommentsRelatedToPost(client, {
+      title: 'Reports a bug in your code',
+    });
     //PROJECTION
-    await findFields(client);
+    //await findFields(client);
     //-------------------------------------------------------
   } catch (err) {
     console.error(err);
