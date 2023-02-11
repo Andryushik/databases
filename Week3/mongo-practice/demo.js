@@ -180,12 +180,12 @@ async function main() {
     //await findAllComments(client, {});
     //await findAllComments(client, { username: 'GoodGuyGreg' });
     //await findAllComments(client, { username: 'ScumbagSteve' });
+    //PROJECTION
+    //await findFields(client);
+    //RELATIONSHIPS
     await findAllCommentsRelatedToPost(client, {
       title: 'Reports a bug in your code',
     });
-    //PROJECTION
-    //await findFields(client);
-    //-------------------------------------------------------
   } catch (err) {
     console.error(err);
   } finally {
@@ -367,6 +367,16 @@ async function findAllComments(client, searchBy) {
   }
 }
 
+async function findFields(client) {
+  const found = await client
+    .db('mongo_practice')
+    .collection('comments')
+    .find({ username: 'GoodGuyGreg' })
+    .project({ _id: 0, comment: 1 })
+    .toArray();
+  console.log(found);
+}
+
 async function findAllCommentsRelatedToPost(client, searchBy) {
   const results = await client
     .db('mongo_practice')
@@ -377,23 +387,13 @@ async function findAllCommentsRelatedToPost(client, searchBy) {
     console.log(`Found ${results.length} post(s): `);
     const postId = results[0]._id.toString();
     console.log(postId);
-    const found = await client
+    const resultComments = await client
       .db('mongo_practice')
       .collection('comments')
-      .find({ _id: `ObjectId('${postId}')` })
+      .find({ _id: `${postId}` })
       .toArray();
-    console.log(found);
+    console.log(resultComments);
   } else {
     console.log(`No post(s) found!`);
   }
-}
-
-async function findFields(client) {
-  const found = await client
-    .db('mongo_practice')
-    .collection('comments')
-    .find({ username: 'GoodGuyGreg' })
-    .project({ _id: 0, comment: 1 })
-    .toArray();
-  console.log(found);
 }
