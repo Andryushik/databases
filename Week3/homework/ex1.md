@@ -33,7 +33,7 @@ Save all answers in a text file / MD file.
       4) Order (of rows/columns) does not matter.
       5) No duplicate records (every record has a primary key).
 
-2. Members are the entities that could be extracted.
+2. Members, Dinners, Venues, Foods are the entities that could be extracted.
 
 3. To make a 3NF compliant solution for the given table, the following tables and columns would be needed:
 
