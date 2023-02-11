@@ -180,10 +180,11 @@ async function main() {
     //await findAllComments(client, {});
     //await findAllComments(client, { username: 'GoodGuyGreg' });
     //await findAllComments(client, { username: 'ScumbagSteve' });
-    await findAllCommentsRelatedToPost(client, {
-      title: 'Reports a bug in your code',
-    });
-
+    // await findAllCommentsRelatedToPost(client, {
+    //   title: 'Reports a bug in your code',
+    // });
+    //PROJECTION
+    await findFields(client);
     //-------------------------------------------------------
   } catch (err) {
     console.error(err);
@@ -385,4 +386,14 @@ async function findAllCommentsRelatedToPost(client, searchBy) {
   } else {
     console.log(`No post(s) found!`);
   }
+}
+
+async function findFields(client) {
+  const found = await client
+    .db('mongo_practice')
+    .collection('comments')
+    .find({ username: 'GoodGuyGreg' })
+    .project({ _id: 0, comment: 1 })
+    .toArray();
+  console.log(found);
 }
