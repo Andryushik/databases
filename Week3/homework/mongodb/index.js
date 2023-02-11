@@ -1,6 +1,7 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
-
-const { seedDatabase } = require("./seedDatabase.js");
+const { MongoClient, ServerApiVersion } = require('mongodb');
+require('dotenv').config();
+const mongoUrl = process.env.MONGO_URL;
+const { seedDatabase } = require('./seedDatabase.js');
 
 async function createEpisodeExercise(client) {
   /**
@@ -14,7 +15,7 @@ async function createEpisodeExercise(client) {
   // Write code that will add this to the collection!
 
   console.log(
-    `Created season 9 episode 13 and the document got the id ${"TODO: fill in variable here"}`
+    `Created season 9 episode 13 and the document got the id ${'TODO: fill in variable here'}`,
   );
 }
 
@@ -27,25 +28,25 @@ async function findEpisodesExercises(client) {
   // Find the title of episode 2 in season 2 [Should be: WINTER SUN]
 
   console.log(
-    `The title of episode 2 in season 2 is ${"TODO: fill in variable here"}`
+    `The title of episode 2 in season 2 is ${'TODO: fill in variable here'}`,
   );
 
   // Find the season and episode number of the episode called "BLACK RIVER" [Should be: S02E06]
 
   console.log(
-    `The season and episode number of the "BLACK RIVER" episode is ${"TODO: fill in variable here"}`
+    `The season and episode number of the "BLACK RIVER" episode is ${'TODO: fill in variable here'}`,
   );
 
   // Find all of the episode titles where Bob Ross painted a CLIFF [Should be: NIGHT LIGHT, EVENING SEASCAPE, SURF'S UP, CLIFFSIDE, BY THE SEA, DEEP WILDERNESS HOME, CRIMSON TIDE, GRACEFUL WATERFALL]
 
   console.log(
-    `The episodes that Bob Ross painted a CLIFF are ${"TODO: fill in variable here"}`
+    `The episodes that Bob Ross painted a CLIFF are ${'TODO: fill in variable here'}`,
   );
 
   // Find all of the episode titles where Bob Ross painted a CLIFF and a LIGHTHOUSE [Should be: NIGHT LIGHT]
 
   console.log(
-    `The episodes that Bob Ross painted a CLIFF and a LIGHTHOUSE are ${"TODO: fill in variable here"}`
+    `The episodes that Bob Ross painted a CLIFF and a LIGHTHOUSE are ${'TODO: fill in variable here'}`,
   );
 }
 
@@ -60,7 +61,7 @@ async function updateEpisodeExercises(client) {
   // Episode 13 in season 30 should be called BLUE RIDGE FALLS, yet it is called BLUE RIDGE FALLERS now. Fix that
 
   console.log(
-    `Ran a command to update episode 13 in season 30 and it updated ${"TODO: fill in variable here"} episodes`
+    `Ran a command to update episode 13 in season 30 and it updated ${'TODO: fill in variable here'} episodes`,
   );
 
   // Unfortunately we made a mistake in the arrays and the element type called 'BUSHES' should actually be 'BUSH' as sometimes only one bush was painted.
@@ -68,7 +69,7 @@ async function updateEpisodeExercises(client) {
   // It should update 120 episodes!
 
   console.log(
-    `Ran a command to update all the BUSHES to BUSH and it updated ${"TODO: fill in variable here"} episodes`
+    `Ran a command to update all the BUSHES to BUSH and it updated ${'TODO: fill in variable here'} episodes`,
   );
 }
 
@@ -79,14 +80,14 @@ async function deleteEpisodeExercise(client) {
    */
 
   console.log(
-    `Ran a command to delete episode and it deleted ${"TODO: fill in variable here"} episodes`
+    `Ran a command to delete episode and it deleted ${'TODO: fill in variable here'} episodes`,
   );
 }
 
 async function main() {
   if (process.env.MONGODB_URL == null) {
     throw Error(
-      `You did not set up the environment variables correctly. Did you create a '.env' file and add a package to create it?`
+      `You did not set up the environment variables correctly. Did you create a '.env' file and add a package to create it?`,
     );
   }
   const client = new MongoClient(process.env.MONGODB_URL, {
