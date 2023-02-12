@@ -1,9 +1,5 @@
-import express from 'express';
 import mysql from 'mysql';
 import { questionSql } from './data/questions.js';
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 const conWorldDb = mysql.createConnection({
   host: 'localhost',
@@ -35,5 +31,3 @@ conWorldDb.end((error) => {
   }
   console.log('Successfully disconnected from World DB.');
 });
-
-app.listen(PORT, console.log(`Server started on port: ${PORT}`));

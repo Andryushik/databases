@@ -1,4 +1,3 @@
-import express from 'express';
 import util from 'util';
 import mysql from 'mysql';
 import {
@@ -12,9 +11,6 @@ import {
   valuesRoom,
   valuesMeeting,
 } from './data/tabledata.js';
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -63,5 +59,3 @@ const fillDataBase = async () => {
 };
 
 fillDataBase();
-
-app.listen(PORT, console.log(`Server started on port: ${PORT}`));
