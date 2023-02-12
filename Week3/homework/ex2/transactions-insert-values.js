@@ -1,4 +1,5 @@
 import mysql from 'mysql';
+import { accountData, accountChangeData } from './values-data.js';
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -16,29 +17,23 @@ connection.connect((error) => {
   console.log('connected to userdb as id ' + connection.threadId);
 });
 
-function createTables() {
+function insertValues() {
   try {
-    connection.query(`DROP TABLE IF EXISTS account_changes;`, (error) => {
-      if (error) throw error;
-    });
-
-    connection.query(`DROP TABLE IF EXISTS account;`, (error) => {
-      if (error) throw error;
-    });
-
     connection.query(
-      `CREATE TABLE account (account_number INT(3) AUTO_INCREMENT PRIMARY KEY, balance DECIMAL(10, 2) NOT NULL, CHECK (balance >= 0));`,
+      `INSERT IGNORE INTO account (account_number, balance) VALUES ?`,
+      [accountData],
       (error) => {
         if (error) throw error;
-        console.log('Table account created');
+        console.log('Table account filled up');
       },
     );
 
     connection.query(
-      `CREATE TABLE account_changes (change_number INT(5) ZEROFILL AUTO_INCREMENT PRIMARY KEY, account_number INT NOT NULL, amount DECIMAL(10, 2) NOT NULL, changed_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, remark VARCHAR(255), FOREIGN KEY (account_number) REFERENCES account(account_number));`,
+      `INSERT IGNORE INTO account_changes (account_number, amount, remark) VALUES ?`,
+      [accountChangeData],
       (error) => {
         if (error) throw error;
-        console.log('Table account_changes created');
+        console.log('Table account_changes filled up');
       },
     );
   } catch (error) {
@@ -54,4 +49,4 @@ function createTables() {
   }
 }
 
-createTables();
+insertValues();
