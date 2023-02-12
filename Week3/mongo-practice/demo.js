@@ -397,3 +397,17 @@ async function findAllCommentsRelatedToPost(client, searchBy) {
     console.log(`No post(s) found!`);
   }
 }
+
+// db.posts.aggregate([
+// {
+// $match: { title: 'Reports a bug in your code' }
+// },
+// {
+// $lookup: {
+// from: 'comments',
+// localField: '_id',
+// foreignField: 'post',
+// as: 'comments'
+// }
+// }
+// ])

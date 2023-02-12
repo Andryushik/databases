@@ -1,0 +1,16 @@
+{
+  "name": "ex2",
+  "version": "1.0.0",
+  "description": "transaction ex2 w3",
+  "type": "module",
+  "main": "transaction-create-tables.js",
+  "scripts": {
+    "start": "node transaction-create-tables.js"
+  },
+  "keywords": [],
+  "author": "Andrei Popov",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}

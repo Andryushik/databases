@@ -9,6 +9,7 @@ Save all answers in a text file / MD file.
 2. What entities do you recognize that could be extracted?
 3. Name all the tables and columns that would make a 3NF compliant solution.
 
+```table
 +-----------+---------------+----------------+-----------+-------------+------------+-------------------+-----------+------------------+
 | member_id | member_name   | member_address | dinner_id | dinner_date | venue_code | venue_description | food_code | food_description |
 +-----------+---------------+----------------+-----------+-------------+------------+-------------------+-----------+------------------+
@@ -21,6 +22,7 @@ Save all answers in a text file / MD file.
 |         5 | Gabor         | 54 Vivaldi St  | D00001005 | Mar 26 '20  | B05        | Hungry Hungary    | G1, P2    | Goulash, Pasca   |
 |         6 | Hema          | 9 Peter St     | D00001003 | 01-04-2020  | B03        | Goat Farm         | P1, T1, M1| Pie, Tea, Mousse |
 +-----------+---------------+----------------+-----------+-------------+------------+-------------------+-----------+------------------+
+```
 
 ## ANSWERS
 
