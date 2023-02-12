@@ -1,5 +1,4 @@
 import mysql from 'mysql';
-// import { accountData, accountChangeData } from './values-data.js';
 
 const connection = mysql.createConnection({
   host: 'localhost',
