@@ -49,7 +49,7 @@ WHERE gender = 'Female';`,
     );
 
     connection.query(
-      `SELECT university, COUNT(paper_title) AS 'Total researches' FROM authors
+      `SELECT university, COUNT(paper_id) AS 'Total researches' FROM authors
       JOIN research_Papers ON author_id = research_author
       GROUP BY university;`,
       (error, result) => {

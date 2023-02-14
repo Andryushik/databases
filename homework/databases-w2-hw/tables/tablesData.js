@@ -191,12 +191,6 @@ const papersData = [
     14,
   ],
   [
-    'The Future of Energy',
-    'International Conference on Energy',
-    '2012-07-05',
-    22,
-  ],
-  [
     'The Origin of the Solar System',
     'International Conference on Astronomy',
     '2012-08-01',
