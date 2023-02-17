@@ -1,16 +1,14 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import * as dotenv from 'dotenv';
-import csv from 'csvtojson'; //const csv = require('csvtojson');
-dotenv.config(); //require('dotenv').config();
+import csv from 'csvtojson';
+dotenv.config();
 
 const mongoUrl = process.env.MONGODB_URL;
 const csvFilePath = 'ex1-aggregation/population_pyramid_1950-2022.csv';
 
 async function main() {
   if (mongoUrl == null) {
-    throw Error(
-      `You did not set up the environment variables correctly. Did you create a '.env' file and add a package to create it?`,
-    );
+    throw Error(`You did not set up the environment variables correctly.`);
   }
   const client = new MongoClient(mongoUrl, {
     useNewUrlParser: true,
