@@ -9,10 +9,10 @@
   "type": "module",
   "main": "ex1.js",
   "scripts": {
-    "start": "ex1.js"
+    "start": "node ex1.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Andrei Popov",
   "license": "ISC",
-  "description": ""
+  "description": "homework databases week 4"
 }

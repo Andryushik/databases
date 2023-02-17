@@ -22,7 +22,8 @@ async function main() {
     await client.connect();
     console.log('Connected to databaseWeek4');
     //
-    await addCollection(client);
+    //await addCollection(client);
+    await populationOfCountry(client, 'Netherlands');
     //
   } catch (err) {
     console.error(err);
@@ -34,7 +35,6 @@ async function main() {
 
 async function addCollection(client) {
   const jsonArray = await csv().fromFile(csvFilePath);
-  //console.log(jsonArray);
 
   const hasCollection = await client
     .db('databaseWeek4')
@@ -50,6 +50,48 @@ async function addCollection(client) {
     .db('databaseWeek4')
     .collection('population')
     .insertMany(jsonArray);
+}
+
+async function populationOfCountry(client, country) {
+  var agg = [
+    {
+      $match: {
+        Country: `${country}`,
+      },
+    },
+    {
+      $addFields: {
+        populationM: {
+          $toInt: '$M',
+        },
+        populationF: {
+          $toInt: '$F',
+        },
+      },
+    },
+    {
+      $addFields: {
+        population: {
+          $sum: ['$populationM', '$populationF'],
+        },
+      },
+    },
+    {
+      $group: {
+        _id: '$Year',
+        population: {
+          $sum: '$population',
+        },
+      },
+    },
+  ];
+
+  const populationList = await client
+    .db('databaseWeek4')
+    .collection('population')
+    .aggregate(agg)
+    .toArray();
+  console.log(populationList);
 }
 
 main();
