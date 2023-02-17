@@ -1,6 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
-const mongoUrl = process.env.MONGO_URL;
+const mongoUrl = process.env.MONGODB_URL;
 const { seedDatabase } = require('./seedDatabase.js');
 
 async function createEpisodeExercise(client) {
@@ -101,12 +101,12 @@ async function deleteEpisodeExercise(client) {
 }
 
 async function main() {
-  if (process.env.MONGODB_URL == null) {
+  if (mongoUrl == null) {
     throw Error(
       `You did not set up the environment variables correctly. Did you create a '.env' file and add a package to create it?`,
     );
   }
-  const client = new MongoClient(process.env.MONGODB_URL, {
+  const client = new MongoClient(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverApi: ServerApiVersion.v1,
