@@ -23,9 +23,9 @@ connection.connect((error) => {
 
 const seedDatabase = () => {
   try {
-    // connection.query(`SET FOREIGN_KEY_CHECKS=0;`, (error) => {
-    //   if (error) throw error;
-    // });
+    connection.query(`SET FOREIGN_KEY_CHECKS=0;`, (error) => {
+      if (error) throw error;
+    });
 
     connection.query(`DROP TABLE IF EXISTS author_research`, (error) => {
       if (error) throw error;

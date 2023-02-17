@@ -19,8 +19,8 @@ connection.connect((error) => {
 const executeJoins = () => {
   try {
     connection.query(
-      `SELECT author_name, mentor_name FROM authors
-    JOIN mentors ON authors.mentor_id = mentors.mentor_id;`,
+      `SELECT first.author_name AS Author, second.author_name AS Mentor FROM authors AS first
+    LEFT JOIN authors AS second ON first.mentor_id = second.author_id;`,
       (error, result) => {
         if (error) throw error;
         console.table(result);
@@ -29,7 +29,8 @@ const executeJoins = () => {
 
     connection.query(
       `SELECT authors.*, research_papers.paper_title FROM authors
-      LEFT JOIN research_Papers ON authors.author_id = research_Papers.research_author;`,
+      LEFT JOIN author_research ON authors.author_id = author_research.author_id
+      LEFT JOIN research_papers ON author_research.paper_id = research_papers.paper_id;`,
       (error, result) => {
         if (error) throw error;
         console.table(result);

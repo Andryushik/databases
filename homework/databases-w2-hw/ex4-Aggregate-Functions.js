@@ -19,7 +19,8 @@ connection.connect((error) => {
 const executeQueries = () => {
   try {
     connection.query(
-      `SELECT paper_title AS 'Research title', COUNT(research_author) AS 'Authors quantity' FROM research_Papers
+      `SELECT research_papers.paper_title AS 'Research title', COUNT(author_id) AS 'Authors quantity' FROM research_papers
+      LEFT JOIN author_research ON research_papers.paper_id = author_research.paper_id
       GROUP BY paper_title;`,
       (error, result) => {
         if (error) throw error;
@@ -28,9 +29,10 @@ const executeQueries = () => {
     );
 
     connection.query(
-      `SELECT COUNT(paper_title) AS number FROM research_Papers
-JOIN authors ON research_author = author_id
-WHERE gender = 'Female';`,
+      `SELECT COUNT(research_papers.paper_id) AS number FROM research_papers
+      JOIN author_research ON research_papers.paper_id = author_research.paper_id  
+      JOIN authors ON author_research.author_id = authors.author_id
+      WHERE gender = 'Female';`,
       (error, result) => {
         if (error) throw error;
         console.log(
@@ -49,8 +51,8 @@ WHERE gender = 'Female';`,
     );
 
     connection.query(
-      `SELECT university, COUNT(paper_id) AS 'Total researches' FROM authors
-      JOIN research_Papers ON author_id = research_author
+      `SELECT university, COUNT(author_research.paper_id) AS 'Total researches' FROM authors
+      JOIN author_research ON authors.author_id = author_research.author_id
       GROUP BY university;`,
       (error, result) => {
         if (error) throw error;
