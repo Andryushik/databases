@@ -21,7 +21,8 @@ async function main() {
     console.log('Connected to databaseWeek4');
     //
     //await addCollection(client);
-    await populationOfCountry(client, 'Netherlands');
+    await populationOfCountry(client);
+    await populationOfContinent(client);
     //
   } catch (err) {
     console.error(err);
@@ -50,8 +51,8 @@ async function addCollection(client) {
     .insertMany(jsonArray);
 }
 
-async function populationOfCountry(client, country) {
-  var agg = [
+async function populationOfCountry(client, country = 'Netherlands') {
+  const agg = [
     {
       $match: {
         Country: `${country}`,
@@ -79,6 +80,48 @@ async function populationOfCountry(client, country) {
         _id: '$Year',
         population: {
           $sum: '$population',
+        },
+      },
+    },
+  ];
+
+  const populationList = await client
+    .db('databaseWeek4')
+    .collection('population')
+    .aggregate(agg)
+    .toArray();
+  console.log(populationList);
+}
+
+async function populationOfContinent(client, age = '100+', year = '2020') {
+  const agg = [
+    {
+      $match: {
+        Country: {
+          $in: [
+            'ASIA',
+            'AFRICA',
+            'EUROPE',
+            'LATIN AMERICA AND THE CARIBBEAN',
+            'NORTHERN AMERICA',
+            'OCEANIA',
+          ],
+        },
+        Year: `${year}`,
+        Age: `${age}`,
+      },
+    },
+    {
+      $addFields: {
+        TotalPopulation: {
+          $sum: [
+            {
+              $toInt: '$M',
+            },
+            {
+              $toInt: '$F',
+            },
+          ],
         },
       },
     },
