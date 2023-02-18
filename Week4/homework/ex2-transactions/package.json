@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "csvtojson": "^2.0.10",
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.0.1"
+  },
+  "name": "databaseweek4",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Andrei Popov",
+  "license": "ISC",
+  "description": "homework databases week 4"
+}
