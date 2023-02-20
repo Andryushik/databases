@@ -33,9 +33,9 @@ async function main() {
 async function addCollection(client) {
   console.log('Please wait! Creating collection...');
   const jsonArray = await csv().fromFile(csvFilePath);
-  for (var i = 0; i < jsonArray.length; i++) {
-    var obj = jsonArray[i];
-    for (var prop in obj) {
+  for (let i = 0; i < jsonArray.length; i++) {
+    const obj = jsonArray[i];
+    for (let prop in obj) {
       if (obj.hasOwnProperty(prop) && obj[prop] !== null && !isNaN(obj[prop])) {
         obj[prop] = +obj[prop];
       }
@@ -95,20 +95,20 @@ async function populationOfCountry(client, country = 'Netherlands') {
         Country: `${country}`,
       },
     },
-    {
-      $addFields: {
-        populationM: {
-          $toInt: '$M', //no need
-        },
-        populationF: {
-          $toInt: '$F', //no need
-        },
-      },
-    },
+    // {
+    //   $addFields: {
+    //     populationM: {
+    //       $toInt: '$M', //no need
+    //     },
+    //     populationF: {
+    //       $toInt: '$F', //no need
+    //     },
+    //   },
+    // },
     {
       $addFields: {
         population: {
-          $sum: ['$populationM', '$populationF'],
+          $sum: ['$M', '$F'], //['$populationM', '$populationF'],
         },
       },
     },
@@ -153,12 +153,14 @@ async function populationOfContinent(client, age = '100+', year = 2020) {
       $addFields: {
         TotalPopulation: {
           $sum: [
-            {
-              $toInt: '$M', //no need
-            },
-            {
-              $toInt: '$F', //no need can make shorter
-            },
+            '$M',
+            '$F',
+            // {
+            //   $toInt: '$M', //no need
+            // },
+            // {
+            //   $toInt: '$F', //no need can make shorter
+            // },
           ],
         },
       },
