@@ -83,6 +83,7 @@ async function populationOfCountry(client, country = 'Netherlands') {
         },
       },
     },
+    { $sort: { _id: 1 } },
   ];
 
   const populationList = await client
