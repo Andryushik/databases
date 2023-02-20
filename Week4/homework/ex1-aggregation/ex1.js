@@ -33,6 +33,14 @@ async function main() {
 async function addCollection(client) {
   console.log('Please wait! Creating collection...');
   const jsonArray = await csv().fromFile(csvFilePath);
+  for (var i = 0; i < jsonArray.length; i++) {
+    var obj = jsonArray[i];
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop) && obj[prop] !== null && !isNaN(obj[prop])) {
+        obj[prop] = +obj[prop];
+      }
+    }
+  }
 
   const hasCollection = await client
     .db('databaseWeek4')
@@ -42,7 +50,36 @@ async function addCollection(client) {
   if (hasCollection) {
     await client.db('databaseWeek4').collection('population').deleteMany({});
   } else {
-    await client.db('databaseWeek4').createCollection('population');
+    await client.db('databaseWeek4').createCollection('population', {
+      validator: {
+        $jsonSchema: {
+          bsonType: 'object',
+          title: 'Population Object Validation',
+          required: ['Country', 'Year', 'Age', 'M', 'F'],
+          properties: {
+            Country: {
+              bsonType: 'string',
+              description: "'Country' must be a string and is required",
+            },
+            Year: {
+              bsonType: 'int',
+              minimum: 1900,
+              maximum: 2030,
+              description:
+                "'Year' must be an integer in [ 1900, 2030 ] and is required",
+            },
+            M: {
+              bsonType: 'int',
+              description: "'M' must be an integer and is required",
+            },
+            F: {
+              bsonType: 'int',
+              description: "'F' must be an integer and is required",
+            },
+          },
+        },
+      },
+    });
   }
   await client
     .db('databaseWeek4')
@@ -61,10 +98,10 @@ async function populationOfCountry(client, country = 'Netherlands') {
     {
       $addFields: {
         populationM: {
-          $toInt: '$M',
+          $toInt: '$M', //no need
         },
         populationF: {
-          $toInt: '$F',
+          $toInt: '$F', //no need
         },
       },
     },
@@ -83,6 +120,7 @@ async function populationOfCountry(client, country = 'Netherlands') {
         },
       },
     },
+    { $sort: { _id: 1 } },
   ];
 
   const populationList = await client
@@ -93,7 +131,7 @@ async function populationOfCountry(client, country = 'Netherlands') {
   console.log(populationList);
 }
 
-async function populationOfContinent(client, age = '100+', year = '2020') {
+async function populationOfContinent(client, age = '100+', year = 2020) {
   const agg = [
     {
       $match: {
@@ -107,7 +145,7 @@ async function populationOfContinent(client, age = '100+', year = '2020') {
             'OCEANIA',
           ],
         },
-        Year: `${year}`,
+        Year: year, //`${year}`,
         Age: `${age}`,
       },
     },
@@ -116,10 +154,10 @@ async function populationOfContinent(client, age = '100+', year = '2020') {
         TotalPopulation: {
           $sum: [
             {
-              $toInt: '$M',
+              $toInt: '$M', //no need
             },
             {
-              $toInt: '$F',
+              $toInt: '$F', //no need can make shorter
             },
           ],
         },
