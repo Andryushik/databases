@@ -31,15 +31,4 @@ async function main() {
   }
 }
 
-async function populationOfCountry(client, country = 'Netherlands') {
-  const agg = [];
-
-  const populationList = await client
-    .db('databaseWeek4')
-    .collection('population')
-    .aggregate(agg)
-    .toArray();
-  console.log(populationList);
-}
-
 main();
