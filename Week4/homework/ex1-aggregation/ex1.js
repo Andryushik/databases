@@ -68,6 +68,11 @@ async function addCollection(client) {
               description:
                 "'Year' must be an integer in [ 1900, 2030 ] and is required",
             },
+            Age: {
+              bsonType: 'string',
+              description:
+                "'Age' must be a string age group (0-4) and is required",
+            },
             M: {
               bsonType: 'int',
               description: "'M' must be an integer and is required",
@@ -81,6 +86,7 @@ async function addCollection(client) {
       },
     });
   }
+
   await client
     .db('databaseWeek4')
     .collection('population')
@@ -95,20 +101,10 @@ async function populationOfCountry(client, country = 'Netherlands') {
         Country: `${country}`,
       },
     },
-    // {
-    //   $addFields: {
-    //     populationM: {
-    //       $toInt: '$M', //no need
-    //     },
-    //     populationF: {
-    //       $toInt: '$F', //no need
-    //     },
-    //   },
-    // },
     {
       $addFields: {
         population: {
-          $sum: ['$M', '$F'], //['$populationM', '$populationF'],
+          $sum: ['$M', '$F'],
         },
       },
     },
@@ -145,23 +141,14 @@ async function populationOfContinent(client, age = '100+', year = 2020) {
             'OCEANIA',
           ],
         },
-        Year: year, //`${year}`,
+        Year: year,
         Age: `${age}`,
       },
     },
     {
       $addFields: {
         TotalPopulation: {
-          $sum: [
-            '$M',
-            '$F',
-            // {
-            //   $toInt: '$M', //no need
-            // },
-            // {
-            //   $toInt: '$F', //no need can make shorter
-            // },
-          ],
+          $sum: ['$M', '$F'],
         },
       },
     },
