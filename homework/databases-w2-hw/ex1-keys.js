@@ -25,19 +25,9 @@ const seedDatabase = () => {
       if (error) throw error;
     });
 
-    connection.query(
-      `ALTER TABLE author_research DROP FOREIGN KEY fk_research_author_paper_id;`,
-      (error) => {
-        if (error) throw error;
-      },
-    );
-
-    connection.query(
-      `ALTER TABLE author_research DROP FOREIGN KEY fk_research_author_author_id;`,
-      (error) => {
-        if (error) throw error;
-      },
-    );
+    connection.query(`DROP TABLE IF EXISTS author_research`, (error) => {
+      if (error) throw error;
+    });
 
     connection.query(`DROP TABLE IF EXISTS research_papers`, (error) => {
       if (error) throw error;

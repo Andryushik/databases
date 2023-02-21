@@ -58,7 +58,7 @@ const seedDatabase = () => {
     );
 
     connection.query(
-      `INSERT INTO research_Papers (paper_title, conference, publish_date) VALUES ?;`,
+      `INSERT INTO research_papers (paper_title, conference, publish_date) VALUES ?;`,
       [papersData],
       (error) => {
         if (error) throw error;
