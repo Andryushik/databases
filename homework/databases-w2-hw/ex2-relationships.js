@@ -29,7 +29,7 @@ const seedDatabase = () => {
       if (error) throw error;
     });
     connection.query(
-      `CREATE TABLE research_Papers (paper_id INT PRIMARY KEY AUTO_INCREMENT, paper_title VARCHAR(255) NOT NULL, conference VARCHAR(255), publish_date DATE);`,
+      `CREATE TABLE research_papers (paper_id INT PRIMARY KEY AUTO_INCREMENT, paper_title VARCHAR(255) NOT NULL, conference VARCHAR(255), publish_date DATE);`,
       (error) => {
         if (error) throw error;
       },
