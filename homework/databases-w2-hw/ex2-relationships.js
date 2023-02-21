@@ -1,5 +1,9 @@
 import mysql from 'mysql';
-import { authorsData, papersData, mentorsData } from './tables/tablesData.js';
+import {
+  authorsData,
+  papersData,
+  authorsResearchData,
+} from './tables/tablesData.js';
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -22,49 +26,29 @@ const seedDatabase = () => {
     connection.query(`SET FOREIGN_KEY_CHECKS=0;`, (error) => {
       if (error) throw error;
     });
-    connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
+
+    connection.query(`DROP TABLE IF EXISTS author_research`, (error) => {
       if (error) throw error;
     });
-    connection.query(`DROP TABLE IF EXISTS mentors`, (error) => {
+
+    connection.query(`DROP TABLE IF EXISTS research_papers`, (error) => {
       if (error) throw error;
     });
+
     connection.query(
       `CREATE TABLE research_papers (paper_id INT PRIMARY KEY AUTO_INCREMENT, paper_title VARCHAR(255) NOT NULL, conference VARCHAR(255), publish_date DATE);`,
       (error) => {
         if (error) throw error;
       },
     );
+
     connection.query(
-      `ALTER TABLE research_Papers ADD COLUMN research_author INT, ADD CONSTRAINT fk_research_author_author_id FOREIGN KEY (research_author) REFERENCES authors(author_id);`,
+      `CREATE TABLE author_research (id INT PRIMARY KEY AUTO_INCREMENT, author_id INT, paper_id INT, CONSTRAINT fk_research_author_author_id FOREIGN KEY (author_id) REFERENCES authors(author_id), CONSTRAINT fk_research_author_paper_id FOREIGN KEY (paper_id) REFERENCES research_papers(paper_id));`,
       (error) => {
         if (error) throw error;
       },
     );
-    connection.query(
-      `CREATE TABLE mentors (mentor_id INT PRIMARY KEY AUTO_INCREMENT, mentor_name VARCHAR(100) NOT NULL);`,
-      (error) => {
-        if (error) throw error;
-      },
-    );
-    connection.query(
-      `ALTER TABLE authors DROP FOREIGN KEY fk_mentor_id_author_id;`,
-      (error) => {
-        if (error) throw error;
-      },
-    );
-    connection.query(
-      `ALTER TABLE authors ADD CONSTRAINT fk_mentor_id_author_id FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id);`,
-      (error) => {
-        if (error) throw error;
-      },
-    );
-    connection.query(
-      `INSERT INTO mentors (mentor_name) VALUES ?;`,
-      [mentorsData],
-      (error) => {
-        if (error) throw error;
-      },
-    );
+
     connection.query(
       `INSERT INTO authors (author_name, university, date_of_birth, h_index, gender, mentor_id) VALUES ?;`,
       [authorsData],
@@ -72,9 +56,18 @@ const seedDatabase = () => {
         if (error) throw error;
       },
     );
+
     connection.query(
-      `INSERT INTO research_Papers (paper_title, conference, publish_date, research_author) VALUES ?;`,
+      `INSERT INTO research_papers (paper_title, conference, publish_date) VALUES ?;`,
       [papersData],
+      (error) => {
+        if (error) throw error;
+      },
+    );
+
+    connection.query(
+      `INSERT INTO author_research (author_id, paper_id) VALUES ?;`,
+      [authorsResearchData],
       (error) => {
         if (error) throw error;
       },
