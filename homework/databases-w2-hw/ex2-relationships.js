@@ -31,7 +31,7 @@ const seedDatabase = () => {
       if (error) throw error;
     });
 
-    connection.query(`DROP TABLE IF EXISTS research_Papers`, (error) => {
+    connection.query(`DROP TABLE IF EXISTS research_papers`, (error) => {
       if (error) throw error;
     });
 
