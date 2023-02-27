@@ -14,13 +14,33 @@ export async function transferCredits(
     await session.withTransaction(async () => {
       await accountsCollection.updateOne(
         { accountN: fromAccountN },
-        { $inc: { balance: amount * -1 } },
+        {
+          $inc: { balance: amount * -1 },
+          $push: {
+            accountChanges: {
+              accountN: toAccountN,
+              amount: amount * -1,
+              changedDate: new Date(),
+              remark: 'transfer',
+            },
+          },
+        },
         { session },
       );
 
       await accountsCollection.updateOne(
         { accountN: toAccountN },
-        { $inc: { balance: amount } },
+        {
+          $inc: { balance: amount },
+          $push: {
+            accountChanges: {
+              accountN: fromAccountN,
+              amount: amount,
+              changedDate: new Date(),
+              remark: 'transfer',
+            },
+          },
+        },
         { session },
       );
 

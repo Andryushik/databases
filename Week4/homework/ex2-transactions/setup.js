@@ -32,22 +32,27 @@ async function addCollectionAccounts(client) {
     {
       accountN: 101,
       balance: 44000,
+      accountChanges: [],
     },
     {
       accountN: 102,
       balance: 3000,
+      accountChanges: [],
     },
     {
       accountN: 103,
       balance: 18000,
+      accountChanges: [],
     },
     {
       accountN: 104,
       balance: 125000,
+      accountChanges: [],
     },
     {
       accountN: 105,
       balance: 70000,
+      accountChanges: [],
     },
   ];
 
